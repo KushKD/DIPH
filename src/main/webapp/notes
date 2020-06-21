@@ -1,0 +1,159 @@
+
+
+CREATE TABLE mst_state (
+    state_id serial PRIMARY KEY  NOT NULL,
+    state_name character varying(50) NOT NULL,
+    active boolean DEFAULT true NOT NULL,
+    createddate timestamp without time zone DEFAULT ('now'::text)::date NOT NULL,
+    lastmodifieddate timestamp without time zone
+);
+
+
+CREATE TABLE mst_district (
+    district_id serial PRIMARY KEY  NOT NULL,
+    district_name character varying(50) NOT NULL,
+    active boolean DEFAULT true NOT NULL,
+    createddate timestamp without time zone DEFAULT ('now'::text)::date NOT NULL,
+    lastmodifieddate timestamp without time zone,
+     state_id INTEGER NOT NULL,
+     FOREIGN KEY (state_id) REFERENCES mst_state(state_id)
+);
+
+
+-- Inter State , Intra State
+CREATE TABLE mst_barrier_type (
+    barrier_type_id serial PRIMARY KEY  NOT NULL,
+    barrier_type_name character varying(50) NOT NULL,
+    active boolean DEFAULT true NOT NULL,
+    createddate timestamp without time zone DEFAULT ('now'::text)::date NOT NULL,
+    lastmodifieddate timestamp without time zone
+);
+
+CREATE TABLE mst_barrier (
+    barrier_id serial PRIMARY KEY  NOT NULL,
+    barrier_name character varying(50) NOT NULL,
+    district_id INTEGER NOT NULL,
+    barrier_type_id INTEGER NOT NULL,
+    active boolean DEFAULT true NOT NULL,
+    createddate timestamp without time zone DEFAULT ('now'::text)::date NOT NULL,
+    lastmodifieddate timestamp without time zone,
+    FOREIGN KEY (district_id) REFERENCES mst_district(district_id),
+    FOREIGN KEY (barrier_type_id) REFERENCES mst_barrier_type(barrier_type_id)
+);
+
+
+
+-- Trucks , Trallas , Light Commercial Vechicle
+CREATE TABLE mst_vehicle_type (
+    vehicle_type_id serial PRIMARY KEY  NOT NULL,
+    vehicle_type_name character varying(50) NOT NULL,
+    active boolean DEFAULT true NOT NULL,
+    createddate timestamp without time zone DEFAULT ('now'::text)::date NOT NULL,
+    lastmodifieddate timestamp without time zone
+);
+
+-- Driver Conductor Other
+CREATE TABLE mst_vehicle_owner_type (
+    vehicle_owner_type_id serial PRIMARY KEY  NOT NULL,
+    vehicle_owner_name character varying(100) NOT NULL,
+    active boolean DEFAULT true NOT NULL,
+    createddate timestamp without time zone DEFAULT ('now'::text)::date NOT NULL,
+    lastmodifieddate timestamp without time zone
+);
+
+-- Vehicle User Entries
+CREATE TABLE mst_vehicle_owner_entries (
+    vehicle_owner_id serial PRIMARY KEY  NOT NULL,
+    id_card_number character varying(50) NOT NULL,
+    district_id INTEGER NOT NULL,
+    barrier_id INTEGER NOT NULL,
+    vehicle_type_id INTEGER NOT NULL,
+    vehicle_owner_type_id INTEGER NOT NULL,
+    vehicle_owner_name character varying(50) NOT NULL, 
+    vehicle_owner_imagename character varying(50) NOT NULL,
+    vehicle_owner_mobile_number INTEGER NOT NULL,
+    id_valid_from DATE NOT NULL,
+    id_valid_upto DATE NOT NULL,
+    vehicle_owner_aadhaar_number INTEGER NOT NULL,
+    vehicle_owner_vehicle_number character varying(15) NOT NULL,
+    vehicle_owner_chassis_number character varying(30) NOT NULL,
+    vehicle_owner_engine_number character varying(30) NOT NULL,
+    vehicle_owner_driving_licence character varying(15) NOT NULL,
+    mobile_information character varying(100) NOT NULL,
+    other_information character varying(255) NOT NULL,
+    data_entered_by INTEGER NOT NULL,
+    active boolean DEFAULT true NOT NULL,
+    createddate timestamp without time zone DEFAULT ('now'::text)::date NOT NULL,
+    lastmodifieddate timestamp without time zone,
+    FOREIGN KEY (data_entered_by) REFERENCES users(user_id),
+    FOREIGN KEY (district_id) REFERENCES mst_district(district_id),
+    FOREIGN KEY (barrier_id) REFERENCES mst_barrier(barrier_id), 
+    FOREIGN KEY (vehicle_type_id) REFERENCES mst_vehicle_type(vehicle_type_id),
+    FOREIGN KEY (vehicle_owner_type_id) REFERENCES mst_vehicle_owner_type(vehicle_owner_type_id)
+);
+
+-- Vehicle User photo Byte
+CREATE TABLE mst_vehicle_owner_documents (
+    doc_id serial PRIMARY KEY  NOT NULL,
+    vehicle_owner_id INTEGER NOT NULL,
+    vehicle_image_owner bytea NOT NULL,
+    uploaded_by INTEGER NOT NULL,
+    active boolean DEFAULT true NOT NULL,
+    createddate timestamp without time zone DEFAULT ('now'::text)::date NOT NULL,
+    lastmodifieddate timestamp without time zone,
+    FOREIGN KEY (vehicle_owner_id) REFERENCES mst_vehicle_owner_entries(vehicle_owner_id),
+    FOREIGN KEY (uploaded_by) REFERENCES users(user_id)
+);
+
+
+
+-- Users
+CREATE TABLE users(
+user_id SERIAL PRIMARY KEY NOT NULL,
+username character varying (50),
+password character varying (50),
+mobile_number INTEGER,
+active boolean DEFAULT true NOT NULL,
+createddate timestamp without time zone DEFAULT ('now'::text)::date NOT NULL,
+lastmodifieddate timestamp without time zone
+
+);
+
+--Roles
+CREATE TABLE roles(
+role_id SERIAL PRIMARY KEY NOT NULL,
+role_name character varying (15),
+role_description character varying (55),
+active boolean DEFAULT true NOT NULL,
+createddate timestamp without time zone DEFAULT ('now'::text)::date NOT NULL,
+lastmodifieddate timestamp without time zone
+
+)
+
+-- Role Mapping
+CREATE TABLE user_role_mapping(
+id SERIAL PRIMARY KEY NOT NULL,
+user_id INTEGER NOT NULL,
+role_id INTEGER NOT NULL,
+active boolean DEFAULT true NOT NULL,
+createddate timestamp without time zone DEFAULT ('now'::text)::date NOT NULL,
+lastmodifieddate timestamp without time zone
+FOREIGN KEY (user_id) REFERENCES users(user_id),
+FOREIGN KEY (role_id) REFERENCES roles(role_id)
+
+)
+
+-- OTP Table
+CREATE TABLE otp_login(
+id SERIAL PRIMARY KEY NOT NULL,
+mobile_number INTEGER NOT NULL,
+otp INTEGER NOT NULL,
+active boolean DEFAULT true NOT NULL,
+createddate timestamp without time zone DEFAULT ('now'::text)::date NOT NULL,
+lastmodifieddate timestamp without time zone
+
+)
+
+
+
+
