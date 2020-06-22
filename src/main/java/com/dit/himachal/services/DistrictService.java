@@ -30,7 +30,7 @@ public class DistrictService {
 
 
   
-	public List<DistrictMaster> getDistricts(int state_id) {
+	public List<DistrictMaster> getDistricts(int state_id) throws Exception {
 		List<DistrictMaster> districts = (List<DistrictMaster>)districtRepository.findByStateId(state_id);
 		return districts;
 	}

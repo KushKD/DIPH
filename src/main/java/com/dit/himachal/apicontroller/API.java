@@ -10,6 +10,7 @@ import com.dit.himachal.services.DistrictService;
 import com.dit.himachal.services.StatesService;
 import com.dit.himachal.services.VehicleTypeService;
 import com.dit.himachal.services.VehicleUserTypeService;
+import com.dit.himachal.utilities.Constants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +25,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class API {
@@ -95,18 +96,19 @@ public class API {
 			@RequestParam(required = true, value = "jsondata") String jsondata) throws IOException {
 		
 		System.out.println("@#@# JsonData "+jsondata); 
+		byte [] content = file.getBytes();
 
-		File convertFile = new File("C:\\Users\\Kush.Dhawan\\Desktop\\ImagePost" + file.getOriginalFilename());
-		convertFile.createNewFile();
-		FileOutputStream fout = new FileOutputStream(convertFile);
-		fout.write(file.getBytes());
-		fout.close();
+		//File convertFile = new File("C:\\Users\\Kush.Dhawan\\Desktop\\ImagePost" + file.getOriginalFilename());
+		//convertFile.createNewFile();
+		//FileOutputStream fout = new FileOutputStream(convertFile);
+		//fout.write(file.getBytes());
+		//fout.close();
 
 //        UserData userData = objectMapper.readValue(jsondata, UserData.class);
 //        System.out.println(userData.getFirstname());
 //        System.out.println(userData.getLastname());
 
-		return new ResponseEntity<>("File is uploaded successfully", HttpStatus.OK);
+		return new ResponseEntity<>(jsondata+file.getSize()+"==="+file.getOriginalFilename()+ content.toString(), HttpStatus.OK);
 
 	}
 
@@ -121,21 +123,65 @@ public class API {
 
 	/**
 	 * 
-	 * @return
+	 * @return   ResponseEntity<?>
 	 */
-	@RequestMapping(value = "/api/districts/{stateId}", method = RequestMethod.GET)
-	public List<DistrictMaster> getDistricts(@PathVariable("stateId") int state_id) {
-		System.out.println(state_id);
-		return districtService.getDistricts(state_id);
+	@RequestMapping(value = "/api/districts/{stateId}", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> getDistricts(@PathVariable("stateId") int state_id) {
+		Map<String,Object> map = null;
+		try{
+			List<DistrictMaster> districts = districtService.getDistricts(state_id);
+			if(!districts.isEmpty()) {
+				  map = new HashMap<String, Object>();
+				  map.put(Constants.keyResponse,districts);
+				  map.put(Constants.keyMessage, Constants.valueMessage);
+				  map.put(Constants.keyStatus, HttpStatus.OK);
+				  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
+			}else {
+				  map = new HashMap<String, Object>();
+				  map.put(Constants.keyResponse,districts);
+				  map.put(Constants.keyMessage, Constants.valueMessage);
+				  map.put(Constants.keyStatus, HttpStatus.OK);
+				  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
+			}
+		}catch(Exception ex) {
+			 map = new HashMap<String, Object>();
+			 map.put(Constants.keyResponse,"");
+			 map.put(Constants.keyMessage, ex.getLocalizedMessage().toString());
+			 map.put(Constants.keyStatus, HttpStatus.INTERNAL_SERVER_ERROR);
+			 return new ResponseEntity<Map<String,Object>>(map, HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+		
 	}
 
 	/**
 	 * 
 	 */
 	@RequestMapping(value = "/api/barriers/{districtId}", method = RequestMethod.GET)
-	public List<BarrierMaster> getBarriers(@PathVariable("districtId") int districtId) {
+	public ResponseEntity<?> getBarriers(@PathVariable("districtId") int districtId) {
 		System.out.println(districtId);
-		return barrierService.getBarriers(districtId);
+		Map<String,Object> map = null;
+		try{
+			List<BarrierMaster> barriers = barrierService.getBarriers(districtId);
+			if(!barriers.isEmpty()) {
+				  map = new HashMap<String, Object>();
+				  map.put(Constants.keyResponse,barriers);
+				  map.put(Constants.keyMessage, Constants.valueMessage);
+				  map.put(Constants.keyStatus, HttpStatus.OK);
+				  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
+			}else {
+				  map = new HashMap<String, Object>();
+				  map.put(Constants.keyResponse,barriers);
+				  map.put(Constants.keyMessage, Constants.valueMessage);
+				  map.put(Constants.keyStatus, HttpStatus.OK);
+				  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
+			}
+		}catch(Exception ex) {
+			 map = new HashMap<String, Object>();
+			 map.put(Constants.keyResponse,"");
+			 map.put(Constants.keyMessage, ex.getLocalizedMessage().toString());
+			 map.put(Constants.keyStatus, HttpStatus.INTERNAL_SERVER_ERROR);
+			 return new ResponseEntity<Map<String,Object>>(map, HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
 	}
 
 	/**
