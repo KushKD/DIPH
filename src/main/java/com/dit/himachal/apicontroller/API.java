@@ -90,11 +90,13 @@ public class API {
 	ObjectMapper objectMapper = new ObjectMapper();
 
 	@Transactional()
-	@RequestMapping(value = "/uploadData", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@RequestMapping(value = "/api/uploadData", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<Object> uploadFile(@RequestParam(required = true, value = "file") MultipartFile file,
 			@RequestParam(required = true, value = "jsondata") String jsondata) throws IOException {
+		
+		System.out.println("@#@# JsonData "+jsondata); 
 
-		File convertFile = new File("c://mydownloads//" + file.getOriginalFilename());
+		File convertFile = new File("C:\\Users\\Kush.Dhawan\\Desktop\\ImagePost" + file.getOriginalFilename());
 		convertFile.createNewFile();
 		FileOutputStream fout = new FileOutputStream(convertFile);
 		fout.write(file.getBytes());
