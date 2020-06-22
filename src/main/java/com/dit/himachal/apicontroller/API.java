@@ -116,14 +116,36 @@ public class API {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/api/states", method = RequestMethod.GET)
-	public List<StatesMaster> getShops() {
-		return statesService.getStates();
+	@RequestMapping(value = "/api/states", method = RequestMethod.GET,produces = "application/json")
+	public ResponseEntity<?> getStates() {
+		Map<String,Object> map = null;
+		try{
+			List<StatesMaster> states = statesService.getStates();
+			if(!states.isEmpty()) {
+				  map = new HashMap<String, Object>();
+				  map.put(Constants.keyResponse,states);
+				  map.put(Constants.keyMessage, Constants.valueMessage);
+				  map.put(Constants.keyStatus, HttpStatus.OK);
+				  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
+			}else {
+				  map = new HashMap<String, Object>();
+				  map.put(Constants.keyResponse,states);
+				  map.put(Constants.keyMessage, Constants.valueMessage);
+				  map.put(Constants.keyStatus, HttpStatus.OK);
+				  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
+			}
+		}catch(Exception ex) {
+			 map = new HashMap<String, Object>();
+			 map.put(Constants.keyResponse,"");
+			 map.put(Constants.keyMessage, ex.getLocalizedMessage().toString());
+			 map.put(Constants.keyStatus, HttpStatus.INTERNAL_SERVER_ERROR);
+			 return new ResponseEntity<Map<String,Object>>(map, HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
 	}
 
 	/**
 	 * 
-	 * @return   ResponseEntity<?>
+	 * @return   
 	 */
 	@RequestMapping(value = "/api/districts/{stateId}", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> getDistricts(@PathVariable("stateId") int state_id) {
@@ -156,7 +178,7 @@ public class API {
 	/**
 	 * 
 	 */
-	@RequestMapping(value = "/api/barriers/{districtId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/api/barriers/{districtId}", method = RequestMethod.GET,produces = "application/json")
 	public ResponseEntity<?> getBarriers(@PathVariable("districtId") int districtId) {
 		System.out.println(districtId);
 		Map<String,Object> map = null;
@@ -188,18 +210,64 @@ public class API {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/api/vehicletypes", method = RequestMethod.GET)
-	public List<VehicleTypeMaster> getVehicleTypes() {
-		return vehicleTypeService.getVehicleTypes();
+	@RequestMapping(value = "/api/vehicletypes", method = RequestMethod.GET,produces = "application/json")
+	public ResponseEntity<?> getVehicleTypes() {
+		
+		Map<String,Object> map = null;
+		try{
+			List<VehicleTypeMaster> vehicleType = vehicleTypeService.getVehicleTypes();
+			if(!vehicleType.isEmpty()) {
+				  map = new HashMap<String, Object>();
+				  map.put(Constants.keyResponse,vehicleType);
+				  map.put(Constants.keyMessage, Constants.valueMessage);
+				  map.put(Constants.keyStatus, HttpStatus.OK);
+				  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
+			}else {
+				  map = new HashMap<String, Object>();
+				  map.put(Constants.keyResponse,vehicleType);
+				  map.put(Constants.keyMessage, Constants.valueMessage);
+				  map.put(Constants.keyStatus, HttpStatus.OK);
+				  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
+			}
+		}catch(Exception ex) {
+			 map = new HashMap<String, Object>();
+			 map.put(Constants.keyResponse,"");
+			 map.put(Constants.keyMessage, ex.getLocalizedMessage().toString());
+			 map.put(Constants.keyStatus, HttpStatus.INTERNAL_SERVER_ERROR);
+			 return new ResponseEntity<Map<String,Object>>(map, HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
 	}
 
 	/**
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/api/vehicleusertypes", method = RequestMethod.GET)
-	public List<VehicleUserType> getVehicleUserTypes() {
-		return vehicleUserTypeService.getVehicleUserTypes();
+	@RequestMapping(value = "/api/vehicleusertypes", method = RequestMethod.GET,produces = "application/json")
+	public ResponseEntity<?> getVehicleUserTypes() {
+		 
+		Map<String,Object> map = null;
+		try{
+			List<VehicleUserType> vehicleUserType = vehicleUserTypeService.getVehicleUserTypes();
+			if(!vehicleUserType.isEmpty()) {
+				  map = new HashMap<String, Object>();
+				  map.put(Constants.keyResponse,vehicleUserType);
+				  map.put(Constants.keyMessage, Constants.valueMessage);
+				  map.put(Constants.keyStatus, HttpStatus.OK);
+				  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
+			}else {
+				  map = new HashMap<String, Object>();
+				  map.put(Constants.keyResponse,vehicleUserType);
+				  map.put(Constants.keyMessage, Constants.valueMessage);
+				  map.put(Constants.keyStatus, HttpStatus.OK);
+				  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
+			}
+		}catch(Exception ex) {
+			 map = new HashMap<String, Object>();
+			 map.put(Constants.keyResponse,"");
+			 map.put(Constants.keyMessage, ex.getLocalizedMessage().toString());
+			 map.put(Constants.keyStatus, HttpStatus.INTERNAL_SERVER_ERROR);
+			 return new ResponseEntity<Map<String,Object>>(map, HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
 	}
 
 }
