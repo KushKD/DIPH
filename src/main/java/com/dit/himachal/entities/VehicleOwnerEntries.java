@@ -48,13 +48,13 @@ public class VehicleOwnerEntries implements Serializable {
 	private String vehicleOwnerImageName;
 	
 	@Column(name = "vehicle_owner_mobile_number")
-	private int vehicleOwnerMobileNumber;
+	private String vehicleOwnerMobileNumber;
 	
 	@Column(name = "id_valid_from")
-	private Date isValidFrom;
+	private String isValidFrom;
 	
 	@Column(name = "id_valid_upto")
-	private Date isValidUpto;
+	private String isValidUpto;
 	
 	@Column(name = "vehicle_owner_aadhaar_number")
 	private String vehicleOwnerAadhaarNumber;
@@ -147,27 +147,27 @@ public class VehicleOwnerEntries implements Serializable {
 		this.vehicleOwnerImageName = vehicleOwnerImageName;
 	}
 
-	public int getVehicleOwnerMobileNumber() {
+	public String getVehicleOwnerMobileNumber() {
 		return vehicleOwnerMobileNumber;
 	}
 
-	public void setVehicleOwnerMobileNumber(int vehicleOwnerMobileNumber) {
+	public void setVehicleOwnerMobileNumber(String vehicleOwnerMobileNumber) {
 		this.vehicleOwnerMobileNumber = vehicleOwnerMobileNumber;
 	}
 
-	public Date getIsValidFrom() {
+	public String getIsValidFrom() {
 		return isValidFrom;
 	}
 
-	public void setIsValidFrom(Date isValidFrom) {
+	public void setIsValidFrom(String isValidFrom) {
 		this.isValidFrom = isValidFrom;
 	}
 
-	public Date getIsValidUpto() {
+	public String getIsValidUpto() {
 		return isValidUpto;
 	}
 
-	public void setIsValidUpto(Date isValidUpto) {
+	public void setIsValidUpto(String isValidUpto) {
 		this.isValidUpto = isValidUpto;
 	}
 

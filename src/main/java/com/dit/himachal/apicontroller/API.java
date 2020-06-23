@@ -3,6 +3,7 @@ package com.dit.himachal.apicontroller;
 import com.dit.himachal.entities.BarrierMaster;
 import com.dit.himachal.entities.DistrictMaster;
 import com.dit.himachal.entities.StatesMaster;
+import com.dit.himachal.entities.VehicleOwnerEntries;
 import com.dit.himachal.entities.VehicleTypeMaster;
 import com.dit.himachal.entities.VehicleUserType;
 import com.dit.himachal.services.BarrierService;
@@ -25,6 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -98,17 +102,17 @@ public class API {
 		System.out.println("@#@# JsonData "+jsondata); 
 		byte [] content = file.getBytes();
 
-		//File convertFile = new File("C:\\Users\\Kush.Dhawan\\Desktop\\ImagePost" + file.getOriginalFilename());
-		//convertFile.createNewFile();
-		//FileOutputStream fout = new FileOutputStream(convertFile);
-		//fout.write(file.getBytes());
-		//fout.close();
+		File convertFile = new File("/Users/kush/Desktop/testImages/" + file.getOriginalFilename());
+		convertFile.createNewFile();
+		FileOutputStream fout = new FileOutputStream(convertFile);
+		fout.write(file.getBytes());
+		fout.close();
 
-//        UserData userData = objectMapper.readValue(jsondata, UserData.class);
+        VehicleOwnerEntries vehicleUSerEntries = objectMapper.readValue(jsondata, VehicleOwnerEntries.class);
 //        System.out.println(userData.getFirstname());
 //        System.out.println(userData.getLastname());
 
-		return new ResponseEntity<>(jsondata+file.getSize()+"==="+file.getOriginalFilename()+ content.toString(), HttpStatus.OK);
+		return new ResponseEntity<>(vehicleUSerEntries.toString()+file.getSize()+"==="+file.getOriginalFilename()+ content.toString(), HttpStatus.OK);
 
 	}
 
