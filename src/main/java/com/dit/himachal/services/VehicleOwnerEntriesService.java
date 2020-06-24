@@ -1,10 +1,15 @@
 package com.dit.himachal.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.dit.himachal.entities.VehicleOwnerEntries;
 import com.dit.himachal.repositories.VehicleOwnerEntriesRepository;
 
+@Service
 public class VehicleOwnerEntriesService {
 	
+	@Autowired
 	private VehicleOwnerEntriesRepository vehicleOwnerEntriesRepository;
 
 	public VehicleOwnerEntriesRepository getVehicleOwnerEntriesRepository() {
@@ -18,6 +23,11 @@ public class VehicleOwnerEntriesService {
 	public Long saveVehicleOwnerEntries(VehicleOwnerEntries object) {
 		VehicleOwnerEntries savedData = vehicleOwnerEntriesRepository.save(object);
 		return savedData.getVehicleOwnerId();
+	}
+	
+	public Long getIdCardNumberSequence() {
+		return  vehicleOwnerEntriesRepository.getNextSeriesId();
+		
 	}
 
 }

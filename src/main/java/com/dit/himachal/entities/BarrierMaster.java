@@ -23,22 +23,22 @@ public class BarrierMaster implements Serializable {
 	@GeneratedValue(generator = "mst_barrier_barrier_id_seq", strategy = GenerationType.AUTO)
 	@SequenceGenerator(name = "mst_barrier_barrier_id_seq", sequenceName = "public.mst_barrier_barrier_id_seq", initialValue = 1, allocationSize = 1)
 	@Column(name = "barrier_id")
-	private int barrierId;
+	private Integer barrierId;
 
 	@Column(name = "barrier_name")
 	private String barrierName;
 	
 	@Column(name = "district_id")
-	private int districtId;
+	private Integer districtId;
 
 	@Column(name = "active")
 	private boolean active;
 
-	public int getBarrierId() {
+	public Integer getBarrierId() {
 		return barrierId;
 	}
 
-	public void setBarrierId(int barrierId) {
+	public void setBarrierId(Integer barrierId) {
 		this.barrierId = barrierId;
 	}
 
@@ -50,11 +50,11 @@ public class BarrierMaster implements Serializable {
 		this.barrierName = barrierName;
 	}
 
-	public int getDistrictId() {
+	public Integer getDistrictId() {
 		return districtId;
 	}
 
-	public void setDistrictId(int districtId) {
+	public void setDistrictId(Integer districtId) {
 		this.districtId = districtId;
 	}
 

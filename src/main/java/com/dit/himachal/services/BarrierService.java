@@ -34,5 +34,9 @@ public class BarrierService {
 		List<BarrierMaster> barriers = (List<BarrierMaster>) barrierRepository.findBarrierByDistrictId(districtId);
 		return barriers;
 	}
+	
+	public String getBarrierName(int barrierId) {
+		return barrierRepository.getBarrierNameByBarrierId(barrierId);
+	}
 
 }

@@ -25,22 +25,22 @@ public class DistrictMaster implements Serializable {
 	@GeneratedValue(generator = "mst_district_district_id_seq", strategy = GenerationType.AUTO)
 	@SequenceGenerator(name = "mst_district_district_id_seq", sequenceName = "public.mst_district_district_id_seq", initialValue = 1, allocationSize = 1)
 	@Column(name = "district_id")
-	private int districtId;
+	private Integer districtId;
 
 	@Column(name = "district_name")
 	private String districtName;
 	
 	@Column(name = "state_id")
-	private int stateId;
+	private Integer stateId;
 
 	@Column(name = "active")
 	private boolean active;
 
-	public int getDistrictId() {
+	public Integer getDistrictId() {
 		return districtId;
 	}
 
-	public void setDistrictId(int districtId) {
+	public void setDistrictId(Integer districtId) {
 		this.districtId = districtId;
 	}
 
@@ -52,11 +52,11 @@ public class DistrictMaster implements Serializable {
 		this.districtName = districtName;
 	}
 
-	public int getStateId() {
+	public Integer getStateId() {
 		return stateId;
 	}
 
-	public void setStateId(int stateId) {
+	public void setStateId(Integer stateId) {
 		this.stateId = stateId;
 	}
 

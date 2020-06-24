@@ -23,7 +23,7 @@ public class StatesMaster implements Serializable {
 	@GeneratedValue(generator = "mst_state_state_id_seq", strategy = GenerationType.AUTO)
 	@SequenceGenerator(name = "mst_state_state_id_seq", sequenceName = "public.mst_state_state_id_seq", initialValue = 1, allocationSize = 1)
 	@Column(name = "state_id")
-	private int stateId;
+	private Integer stateId;
 
 	@Column(name = "state_name")
 	private String stateName;
@@ -31,11 +31,11 @@ public class StatesMaster implements Serializable {
 	@Column(name = "active")
 	private boolean active;
 
-	public int getStateId() {
+	public Integer getStateId() {
 		return stateId;
 	}
 
-	public void setStateId(int stateId) {
+	public void setStateId(Integer stateId) {
 		this.stateId = stateId;
 	}
 

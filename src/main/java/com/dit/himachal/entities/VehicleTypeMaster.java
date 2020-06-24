@@ -23,7 +23,7 @@ public class VehicleTypeMaster implements Serializable {
 	@GeneratedValue(generator = "mst_vehicle_type_vehicle_type_id_seq", strategy = GenerationType.AUTO)
 	@SequenceGenerator(name = "mst_vehicle_type_vehicle_type_id_seq", sequenceName = "public.mst_vehicle_type_vehicle_type_id_seq", initialValue = 1, allocationSize = 1)
 	@Column(name = "vehicle_type_id")
-	private int vehicleId;
+	private Integer vehicleId;
 
 	@Column(name = "vehicle_type_name")
 	private String vehicleName;
@@ -31,11 +31,11 @@ public class VehicleTypeMaster implements Serializable {
 	@Column(name = "active")
 	private boolean active;
 
-	public int getVehicleId() {
+	public Integer getVehicleId() {
 		return vehicleId;
 	}
 
-	public void setVehicleId(int vehicleId) {
+	public void setVehicleId(Integer vehicleId) {
 		this.vehicleId = vehicleId;
 	}
 

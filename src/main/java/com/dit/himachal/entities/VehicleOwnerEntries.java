@@ -21,8 +21,8 @@ public class VehicleOwnerEntries implements Serializable {
 	private static final long serialVersionUID = 7537163873024423738L;
 	
 	@Id
-	@GeneratedValue(generator = "mst_vehicle_owner_type_vehicle_owner_type_id_seq", strategy = GenerationType.AUTO)
-	@SequenceGenerator(name = "mst_vehicle_owner_type_vehicle_owner_type_id_seq", sequenceName = "public.mst_vehicle_owner_type_vehicle_owner_type_id_seq", initialValue = 1, allocationSize = 1)
+	@GeneratedValue(generator = "mst_vehicle_owner_entries_vehicle_owner_id_seq", strategy = GenerationType.AUTO)
+	@SequenceGenerator(name = "mst_vehicle_owner_entries_vehicle_owner_id_seq", sequenceName = "public.mst_vehicle_owner_entries_vehicle_owner_id_seq", initialValue = 1, allocationSize = 1)
 	@Column(name = "vehicle_owner_id")
 	private Long vehicleOwnerId;
 	
@@ -30,16 +30,16 @@ public class VehicleOwnerEntries implements Serializable {
 	private String idCardNumber;
 	
 	@Column(name = "district_id")
-	private int vehicleDistrictId;
+	private Integer vehicleDistrictId;
 	
 	@Column(name = "barrier_id")
-	private int vehicleBarrierId;
+	private Integer vehicleBarrierId;
 	
 	@Column(name = "vehicle_type_id")
-	private int vehicleTypeId;
+	private Integer vehicleTypeId;
 
 	@Column(name = "vehicle_owner_type_id")
-	private int vehicleOwnerTypeId;
+	private Integer vehicleOwnerTypeId;
 	
 	@Column(name = "vehicle_owner_name")
 	private String vehicleOwnerName;
@@ -48,7 +48,7 @@ public class VehicleOwnerEntries implements Serializable {
 	private String vehicleOwnerImageName;
 	
 	@Column(name = "vehicle_owner_mobile_number")
-	private String vehicleOwnerMobileNumber;
+	private Long vehicleOwnerMobileNumber;
 	
 	@Column(name = "id_valid_from")
 	private String isValidFrom;
@@ -78,10 +78,13 @@ public class VehicleOwnerEntries implements Serializable {
 	private String otherInformation;
 	
 	@Column(name = "data_entered_by")
-	private int dataEnteredBy;
+	private Integer dataEnteredBy;
 	
 	@Column(name = "active")
 	private boolean active;
+	
+	@Column(name = "id_generated")
+	private boolean isGenerated;
 
 	public Long getVehicleOwnerId() {
 		return vehicleOwnerId;
@@ -99,35 +102,35 @@ public class VehicleOwnerEntries implements Serializable {
 		this.idCardNumber = idCardNumber;
 	}
 
-	public int getVehicleDistrictId() {
+	public Integer getVehicleDistrictId() {
 		return vehicleDistrictId;
 	}
 
-	public void setVehicleDistrictId(int vehicleDistrictId) {
+	public void setVehicleDistrictId(Integer vehicleDistrictId) {
 		this.vehicleDistrictId = vehicleDistrictId;
 	}
 
-	public int getVehicleBarrierId() {
+	public Integer getVehicleBarrierId() {
 		return vehicleBarrierId;
 	}
 
-	public void setVehicleBarrierId(int vehicleBarrierId) {
+	public void setVehicleBarrierId(Integer vehicleBarrierId) {
 		this.vehicleBarrierId = vehicleBarrierId;
 	}
 
-	public int getVehicleTypeId() {
+	public Integer getVehicleTypeId() {
 		return vehicleTypeId;
 	}
 
-	public void setVehicleTypeId(int vehicleTypeId) {
+	public void setVehicleTypeId(Integer vehicleTypeId) {
 		this.vehicleTypeId = vehicleTypeId;
 	}
 
-	public int getVehicleOwnerTypeId() {
+	public Integer getVehicleOwnerTypeId() {
 		return vehicleOwnerTypeId;
 	}
 
-	public void setVehicleOwnerTypeId(int vehicleOwnerTypeId) {
+	public void setVehicleOwnerTypeId(Integer vehicleOwnerTypeId) {
 		this.vehicleOwnerTypeId = vehicleOwnerTypeId;
 	}
 
@@ -147,11 +150,11 @@ public class VehicleOwnerEntries implements Serializable {
 		this.vehicleOwnerImageName = vehicleOwnerImageName;
 	}
 
-	public String getVehicleOwnerMobileNumber() {
+	public Long getVehicleOwnerMobileNumber() {
 		return vehicleOwnerMobileNumber;
 	}
 
-	public void setVehicleOwnerMobileNumber(String vehicleOwnerMobileNumber) {
+	public void setVehicleOwnerMobileNumber(Long vehicleOwnerMobileNumber) {
 		this.vehicleOwnerMobileNumber = vehicleOwnerMobileNumber;
 	}
 
@@ -227,11 +230,11 @@ public class VehicleOwnerEntries implements Serializable {
 		this.otherInformation = otherInformation;
 	}
 
-	public int getDataEnteredBy() {
+	public Integer getDataEnteredBy() {
 		return dataEnteredBy;
 	}
 
-	public void setDataEnteredBy(int dataEnteredBy) {
+	public void setDataEnteredBy(Integer dataEnteredBy) {
 		this.dataEnteredBy = dataEnteredBy;
 	}
 
@@ -241,6 +244,16 @@ public class VehicleOwnerEntries implements Serializable {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	
+	
+	public boolean isGenerated() {
+		return isGenerated;
+	}
+
+	public void setGenerated(boolean isGenerated) {
+		this.isGenerated = isGenerated;
 	}
 
 	@Override
@@ -255,8 +268,9 @@ public class VehicleOwnerEntries implements Serializable {
 				+ vehicleOwnerChassisNumber + ", vehicleOwnerEngineNumber=" + vehicleOwnerEngineNumber
 				+ ", vehicleOwnerDrivingLicence=" + vehicleOwnerDrivingLicence + ", mobileInformation="
 				+ mobileInformation + ", otherInformation=" + otherInformation + ", dataEnteredBy=" + dataEnteredBy
-				+ ", active=" + active + "]";
+				+ ", active=" + active + ", isGenerated=" + isGenerated + "]";
 	}
+
 	
 	
 	
