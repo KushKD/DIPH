@@ -118,7 +118,7 @@ public class API {
 			  map.put(Constants.keyResponse,new UploadFileResponse(fileName, fileDownloadUri,file.getContentType(), file.getSize(), vehicleUSerEntries));
 			  map.put(Constants.keyMessage, Constants.valueMessage);
 			  map.put(Constants.keyStatus, HttpStatus.OK);
-			  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.UNPROCESSABLE_ENTITY); 
+			  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
 			 
 			 
 			 
