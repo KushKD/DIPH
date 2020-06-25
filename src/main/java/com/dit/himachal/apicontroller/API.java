@@ -33,6 +33,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -113,7 +114,7 @@ public class API {
 			 //Generate ID CARD NUMBER  HP/BARRIERID/Number
 			 vehicleUSerEntries.setIdCardNumber("REGD.NO/HP/"+barrierService.getBarrierName(vehicleUSerEntries.getVehicleBarrierId())+"/"+entriesService.getIdCardNumberSequence());
 			 vehicleUSerEntries.setVehicleOwnerImageName(fileName);
-			 vehicleUSerEntries.setDataEnteredBy(4);
+			
 			 vehicleUSerEntries.setMobileInformation("");
 			 vehicleUSerEntries.setOtherInformation("");
 			 //Save Vehicle Entries 
@@ -333,6 +334,7 @@ public class API {
 	}
 	
 	@RequestMapping(value = "/api/getotp/{mobile}", method = RequestMethod.GET,produces = "application/json")
+	//@Async("threadPoolTaskExecutor")
 	@Transactional
 	public ResponseEntity<?> getOTP(@PathVariable("mobile") String mobile) {
 		 
@@ -371,8 +373,8 @@ public class API {
 						
 						}else {
 							 map = new HashMap<String, Object>();
-							  map.put(Constants.keyResponse,sendOTP);
-							  map.put(Constants.keyMessage, sendOTP.split(",")[1]);
+							  map.put(Constants.keyResponse,"Unable to send OTP .Please connect to Internet and try again.");
+							  map.put(Constants.keyMessage, Constants.valueMessage);
 							  map.put(Constants.keyStatus, HttpStatus.OK);
 							  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
 						}
