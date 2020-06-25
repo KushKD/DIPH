@@ -17,6 +17,7 @@ import com.dit.himachal.entities.RolesEntity;
 import com.dit.himachal.entities.UserEntity;
 import com.dit.himachal.repositories.RolesRepository;
 import com.dit.himachal.repositories.UserRepository;
+import com.dit.himachal.utilities.random24;
 
 @SpringBootTest
 class AppleSeasonIdCardHpApplicationTests {
@@ -72,5 +73,14 @@ class AppleSeasonIdCardHpApplicationTests {
 //        System.out.printf(encoder.encode("luv_password"));
 //    }
 //    
+	
+//  @Test
+//  void checkRandom(){
+//     
+//      System.out.println("!@!@!@!@!"+random24.randomDecimalString(6)); 
+//  }
+	
+	
+	
     
 }

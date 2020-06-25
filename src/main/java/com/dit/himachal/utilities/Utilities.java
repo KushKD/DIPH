@@ -5,6 +5,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+
+
+
 public class Utilities {
 	
 	public static  Date convertStringToDate(String date) throws ParseException {
@@ -14,5 +17,15 @@ public class Utilities {
 	    
 	    return date1;
 	}
+	
+	public static final String createOtpMessage(String OTP) {
+		
+		return Constants.otp_Message+OTP;
+	}
+	
+	
+	
+	
+
 
 }

@@ -2,21 +2,27 @@ package com.dit.himachal.apicontroller;
 
 import com.dit.himachal.entities.BarrierMaster;
 import com.dit.himachal.entities.DistrictMaster;
+import com.dit.himachal.entities.OTPMaster;
 import com.dit.himachal.entities.StatesMaster;
 import com.dit.himachal.entities.VehicleOwnerDocuments;
 import com.dit.himachal.entities.VehicleOwnerEntries;
 import com.dit.himachal.entities.VehicleTypeMaster;
 import com.dit.himachal.entities.VehicleUserType;
+import com.dit.himachal.externalservices.SMSServices;
 import com.dit.himachal.payload.UploadFileResponse;
+import com.dit.himachal.repositories.OtpRepository;
 import com.dit.himachal.services.BarrierService;
 import com.dit.himachal.services.DistrictService;
 import com.dit.himachal.services.FileStorageService;
+import com.dit.himachal.services.OtpService;
 import com.dit.himachal.services.StatesService;
 import com.dit.himachal.services.VehicleOwnerDocumentsService;
 import com.dit.himachal.services.VehicleOwnerEntriesService;
 import com.dit.himachal.services.VehicleTypeService;
 import com.dit.himachal.services.VehicleUserTypeService;
 import com.dit.himachal.utilities.Constants;
+import com.dit.himachal.utilities.Utilities;
+import com.dit.himachal.utilities.random24;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +78,9 @@ public class API {
 	
 	@Autowired
 	private VehicleOwnerDocumentsService vehicleOwnerDocumentsService;
+	
+	@Autowired
+	private OtpService otpService;
 	
 
 
@@ -303,6 +312,66 @@ public class API {
 			}else {
 				  map = new HashMap<String, Object>();
 				  map.put(Constants.keyResponse,vehicleUserType);
+				  map.put(Constants.keyMessage, Constants.valueMessage);
+				  map.put(Constants.keyStatus, HttpStatus.OK);
+				  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
+			}
+		}catch(Exception ex) {
+			 map = new HashMap<String, Object>();
+			 map.put(Constants.keyResponse,"");
+			 map.put(Constants.keyMessage, ex.getLocalizedMessage().toString());
+			 map.put(Constants.keyStatus, HttpStatus.INTERNAL_SERVER_ERROR);
+			 return new ResponseEntity<Map<String,Object>>(map, HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
+	
+	@RequestMapping(value = "/api/getotp", method = RequestMethod.GET,produces = "application/json")
+	@Transactional
+	public ResponseEntity<?> getOTP() {
+		 
+		Map<String,Object> map = null;
+		try{
+			String SMSServerCode = null;
+			Long mobileNumber = null;
+			SMSServices smsService= new SMSServices();
+		    String optToSend = random24.randomDecimalString(6);
+		    String otpMessage = Utilities.createOtpMessage(optToSend);
+			String sendOTP = smsService.sendOtpSMS(Constants.smsUsername, Constants.smsPassword, otpMessage, Constants.smsSenderId, Constants.smaSampleMobile, Constants.smsSecureKey);
+			if(!sendOTP.isEmpty()) {
+				
+				SMSServerCode = sendOTP.split(",")[0];
+				if(SMSServerCode.equalsIgnoreCase("402")) {
+					OTPMaster otpentity = new OTPMaster();
+					otpentity.setMobilenumber(9459619235L);
+					otpentity.setOtp(Integer.parseInt(optToSend));
+					otpentity.setActive(true);
+					
+					//Update Table if Required
+					if(!otpService.isRecordExist(otpentity)) {
+						otpService.saveOPT(otpentity);
+					}else {
+						otpService.updateOTPTable(otpentity);
+						otpService.saveOPT(otpentity);
+					}
+					
+					
+				}else {
+					 map = new HashMap<String, Object>();
+					  map.put(Constants.keyResponse,sendOTP);
+					  map.put(Constants.keyMessage, sendOTP.split(",")[1]);
+					  map.put(Constants.keyStatus, HttpStatus.OK);
+					  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
+				}
+				
+				
+				  map = new HashMap<String, Object>();
+				  map.put(Constants.keyResponse,sendOTP);
+				  map.put(Constants.keyMessage, Constants.valueMessage);
+				  map.put(Constants.keyStatus, HttpStatus.OK);
+				  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
+			}else {
+				  map = new HashMap<String, Object>();
+				  map.put(Constants.keyResponse,sendOTP);
 				  map.put(Constants.keyMessage, Constants.valueMessage);
 				  map.put(Constants.keyStatus, HttpStatus.OK);
 				  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
