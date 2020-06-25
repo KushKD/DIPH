@@ -53,4 +53,10 @@ public void updateOTPTable(OTPMaster otp) {
 		otpRepository.updateOldOTPRecord(otp.getMobilenumber());
 	}
 
+public boolean VerifyOtp(Long mobile, Integer otp) {
+	 Integer count =  otpRepository.verifyOtp(mobile, otp);
+	    return ( ( count.equals( 0 ) ) ? false : true );
+}
+
+
 }

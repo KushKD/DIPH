@@ -4,11 +4,13 @@ import com.dit.himachal.entities.BarrierMaster;
 import com.dit.himachal.entities.DistrictMaster;
 import com.dit.himachal.entities.OTPMaster;
 import com.dit.himachal.entities.StatesMaster;
+import com.dit.himachal.entities.UserEntity;
 import com.dit.himachal.entities.VehicleOwnerDocuments;
 import com.dit.himachal.entities.VehicleOwnerEntries;
 import com.dit.himachal.entities.VehicleTypeMaster;
 import com.dit.himachal.entities.VehicleUserType;
 import com.dit.himachal.externalservices.SMSServices;
+import com.dit.himachal.modals.UsePoJo;
 import com.dit.himachal.payload.UploadFileResponse;
 import com.dit.himachal.repositories.OtpRepository;
 import com.dit.himachal.services.BarrierService;
@@ -16,6 +18,7 @@ import com.dit.himachal.services.DistrictService;
 import com.dit.himachal.services.FileStorageService;
 import com.dit.himachal.services.OtpService;
 import com.dit.himachal.services.StatesService;
+import com.dit.himachal.services.UserService;
 import com.dit.himachal.services.VehicleOwnerDocumentsService;
 import com.dit.himachal.services.VehicleOwnerEntriesService;
 import com.dit.himachal.services.VehicleTypeService;
@@ -30,6 +33,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -81,6 +85,9 @@ public class API {
 	
 	@Autowired
 	private OtpService otpService;
+	
+	@Autowired
+	private UserService userService;
 	
 
 
@@ -325,56 +332,69 @@ public class API {
 		}
 	}
 	
-	@RequestMapping(value = "/api/getotp", method = RequestMethod.GET,produces = "application/json")
+	@RequestMapping(value = "/api/getotp/{mobile}", method = RequestMethod.GET,produces = "application/json")
 	@Transactional
-	public ResponseEntity<?> getOTP() {
+	public ResponseEntity<?> getOTP(@PathVariable("mobile") String mobile) {
 		 
 		Map<String,Object> map = null;
 		try{
 			String SMSServerCode = null;
-			Long mobileNumber = null;
+			Long mobileNumber = Long.valueOf(mobile);
 			SMSServices smsService= new SMSServices();
 		    String optToSend = random24.randomDecimalString(6);
 		    String otpMessage = Utilities.createOtpMessage(optToSend);
-			String sendOTP = smsService.sendOtpSMS(Constants.smsUsername, Constants.smsPassword, otpMessage, Constants.smsSenderId, Constants.smaSampleMobile, Constants.smsSecureKey);
+			String sendOTP = smsService.sendOtpSMS(Constants.smsUsername, Constants.smsPassword, otpMessage, Constants.smsSenderId, Long.toString(mobileNumber), Constants.smsSecureKey);
 			if(!sendOTP.isEmpty()) {
 				
 				SMSServerCode = sendOTP.split(",")[0];
-				if(SMSServerCode.equalsIgnoreCase("402")) {
-					OTPMaster otpentity = new OTPMaster();
-					otpentity.setMobilenumber(9459619235L);
-					otpentity.setOtp(Integer.parseInt(optToSend));
-					otpentity.setActive(true);
+				
 					
-					//Update Table if Required
-					if(!otpService.isRecordExist(otpentity)) {
-						otpService.saveOPT(otpentity);
-					}else {
-						otpService.updateOTPTable(otpentity);
-						otpService.saveOPT(otpentity);
+					try{
+						if(SMSServerCode.equalsIgnoreCase("402")) {
+						OTPMaster otpentity = new OTPMaster();
+						otpentity.setMobilenumber(mobileNumber);
+						otpentity.setOtp(Integer.parseInt(optToSend));
+						otpentity.setActive(true);
+						
+						//Update Table if Required
+						if(!otpService.isRecordExist(otpentity)) {
+							otpService.saveOPT(otpentity);
+						}else {
+							otpService.updateOTPTable(otpentity);
+							otpService.saveOPT(otpentity);
+						}
+						 map = new HashMap<String, Object>();
+						  map.put(Constants.keyResponse,"OTP sent Successfully to the Registered Mobile number.");
+						  map.put(Constants.keyMessage, Constants.valueMessage);
+						  map.put(Constants.keyStatus, HttpStatus.OK);
+						  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
+						
+						}else {
+							 map = new HashMap<String, Object>();
+							  map.put(Constants.keyResponse,sendOTP);
+							  map.put(Constants.keyMessage, sendOTP.split(",")[1]);
+							  map.put(Constants.keyStatus, HttpStatus.OK);
+							  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
+						}
+						
+						
+					}catch (Exception ex) {
+						
+						 map = new HashMap<String, Object>();
+						  map.put(Constants.keyResponse,ex.getLocalizedMessage());
+						  map.put(Constants.keyMessage, Constants.valueMessage);
+						  map.put(Constants.keyStatus, HttpStatus.INTERNAL_SERVER_ERROR);
+						  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.INTERNAL_SERVER_ERROR); 
+						
 					}
 					
-					
-				}else {
-					 map = new HashMap<String, Object>();
-					  map.put(Constants.keyResponse,sendOTP);
-					  map.put(Constants.keyMessage, sendOTP.split(",")[1]);
-					  map.put(Constants.keyStatus, HttpStatus.OK);
-					  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
-				}
-				
-				
-				  map = new HashMap<String, Object>();
-				  map.put(Constants.keyResponse,sendOTP);
-				  map.put(Constants.keyMessage, Constants.valueMessage);
-				  map.put(Constants.keyStatus, HttpStatus.OK);
-				  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
+				 
 			}else {
 				  map = new HashMap<String, Object>();
-				  map.put(Constants.keyResponse,sendOTP);
+				  map.put(Constants.keyResponse,"Something went wrong. Please connect to Internet and try again.");
 				  map.put(Constants.keyMessage, Constants.valueMessage);
-				  map.put(Constants.keyStatus, HttpStatus.OK);
-				  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
+				  map.put(Constants.keyStatus, HttpStatus.INTERNAL_SERVER_ERROR);
+				  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.INTERNAL_SERVER_ERROR); 
 			}
 		}catch(Exception ex) {
 			 map = new HashMap<String, Object>();
@@ -384,5 +404,81 @@ public class API {
 			 return new ResponseEntity<Map<String,Object>>(map, HttpStatus.INTERNAL_SERVER_ERROR); 
 		}
 	}
+	
+	
+	
+	
+	@SuppressWarnings("unused")
+	@RequestMapping(value = "/api/verifyotp/{mobile}/{otp}", method = RequestMethod.GET,produces = "application/json")
+	public ResponseEntity<?> verifyOtp(@PathVariable("mobile") String mobile, @PathVariable("otp") String otp) {
+		Map<String,Object> map = null;
+		UserEntity user =null;
+		UsePoJo userToSend = new UsePoJo();
+		try {
+		if(mobile!=null && !mobile.isEmpty() && otp!=null && !otp.isEmpty()) {
+			Long mobileNumber = Long.valueOf(mobile);
+			Integer otpNumber = Integer.parseInt(otp);
+			
+			//Check Weather The Otp and Number Matches
+			if(otpService.VerifyOtp(mobileNumber, otpNumber)) {
+				System.out.println("OTP and Mobile Number Match");
+				//GET USER ID ON THE BASIS OF Mobile Number
+				user = userService.getUserDetails(mobileNumber);
+				System.out.println("!@!@!@#$#$%^&"+user.getUserId());
+				Long iduser = user.getUserId();
+				String userName = user.getUserName();
+				userToSend.setUser_id(iduser);
+				userToSend.setUser_name(userName);
+				userToSend.setMobile_number(user.getMobileNumber());
+				
+				
+				if(userToSend!=null) {
+					map = new HashMap<String, Object>();
+					  map.put(Constants.keyResponse,userToSend);
+					  map.put(Constants.keyMessage, Constants.valueMessage);
+					  map.put(Constants.keyStatus, HttpStatus.OK);
+					  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
+				}else {
+					map = new HashMap<String, Object>();
+					  map.put(Constants.keyResponse,"Unable to find User Details with the specific Mobile Number");
+					  map.put(Constants.keyMessage, Constants.valueMessage);
+					  map.put(Constants.keyStatus, HttpStatus.OK);
+					  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
+				}
+				
+					
+				
+				
+				
+			}else {
+				 map = new HashMap<String, Object>();
+				  map.put(Constants.keyResponse,"Authentication Failed. OTP and Mobile number mismatch.");
+				  map.put(Constants.keyMessage, Constants.valueMessage);
+				  map.put(Constants.keyStatus, HttpStatus.OK);
+				  return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK); 
+			}
+		}else {
+			map = new HashMap<String, Object>();
+			 map.put(Constants.keyResponse,"");
+			 map.put(Constants.keyMessage, Constants.valueMessage);
+			 map.put(Constants.keyStatus, HttpStatus.INTERNAL_SERVER_ERROR);
+			 return new ResponseEntity<Map<String,Object>>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		}catch (Exception ex) {
+			map = new HashMap<String, Object>();
+			 map.put(Constants.keyResponse,"");
+			 map.put(Constants.keyMessage, ex.getLocalizedMessage().toString());
+			 map.put(Constants.keyStatus, HttpStatus.INTERNAL_SERVER_ERROR);
+			 return new ResponseEntity<Map<String,Object>>(map, HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	
+		
+	}
+	
+	
+	
+	
+	
+	
 
 }

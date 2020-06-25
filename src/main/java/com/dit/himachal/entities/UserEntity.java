@@ -26,7 +26,7 @@ public class UserEntity {
     @Column(name = "active")
     private boolean active;
 
-    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<RolesEntity> roles;
 
 	public long getUserId() {

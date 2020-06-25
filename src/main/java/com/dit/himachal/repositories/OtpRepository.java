@@ -19,6 +19,9 @@ public interface OtpRepository extends CrudRepository<OTPMaster, Long> {
 	 @Query(value="UPDATE public.otp_login SET active = false WHERE mobile_number = :mobile", nativeQuery = true)
 	 void updateOldOTPRecord(@Param("mobile") Long mobile);
 	 
+	 @Query(value="SELECT count(*) FROM public.otp_login WHERE  mobile_number =:mobile AND active = true AND otp =:otpNumber", nativeQuery = true)
+	 Integer verifyOtp(@Param("mobile") Long mobile , @Param("otpNumber") Integer otpNumber);
+	 
 }
 
 
