@@ -36,7 +36,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
      auth.jdbcAuthentication().dataSource(dataSource)
               .usersByUsernameQuery(
-                "Select username ,password,is_active  from users where username = ?")
+                "Select username ,password_,active  from users where username = ?")
                 .authoritiesByUsernameQuery(
                         "SELECT urm.user_id,  roles.role_name,urm.role_id, users.username from user_role_mapping as urm\n" +
                                 "INNER JOIN roles as roles ON roles.role_id = urm.role_id \n" +
@@ -47,14 +47,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-        		.anonymous()
-        		.and()
+        		//.anonymous()
+        		//.and()
                 .authorizeRequests()
                 .antMatchers("/api/**").permitAll()
                 .antMatchers("/api/getotp/**").permitAll()
                 .antMatchers("/api/verifyotp/**").permitAll()
                 .antMatchers("/downloadFile/**").permitAll()
-                //.antMatchers("/admin/**").hasAnyRole("ADMIN")
+                .antMatchers("/admin/**").hasAnyRole("ADMIN")
                 //.anyRequest().hasAnyRole("USER")
                 .anyRequest().authenticated()
                 .and()

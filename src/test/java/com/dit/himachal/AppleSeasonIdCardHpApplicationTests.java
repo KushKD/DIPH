@@ -34,9 +34,10 @@ class AppleSeasonIdCardHpApplicationTests {
 //    void createUser(){
 //
 //        UserEntity user1 = new UserEntity();
-//        user1.setUserName("Demo");
-//        user1.setPassword("Demo@123");
-//        user1.setMobileNumber(9459619235L);
+//        PasswordEncoder encoder = new BCryptPasswordEncoder();
+//        user1.setUserName("kush");
+//        user1.setPassword(encoder.encode("kush"));
+//        user1.setMobileNumber(9418008559L);
 //        user1.setActive(true);
 //
 ////        UserEntity user2 = new UserEntity();
@@ -46,32 +47,34 @@ class AppleSeasonIdCardHpApplicationTests {
 //        userRepository.save(user1);
 //       // userRepository.save(user2);
 //    }
-//
-//
-//    @Test
-//    @Transactional
-//    @Rollback(value = false)
-//    void createRoles() {
-//
-//        RolesEntity roles = new RolesEntity();
-//        roles.setRoleName("ADMIN");
-//        roles.setRoleDescription("Administrator");
-//
-//        Optional<UserEntity> user = userRepository.findById((long) 4);
-//		List<UserEntity> list = new ArrayList<UserEntity>();
-//		list.add(user.get());
-//        roles.setUsers(list);
-//
-//        rolesRepository.save(roles);
-//
-//    }
-//
-//    @Test
-//    void bCryptPassword(){
-//        PasswordEncoder encoder = new BCryptPasswordEncoder();
-//        encoder.encode("luv_password");
-//        System.out.printf(encoder.encode("luv_password"));
-//    }
+////
+////
+////    @Test
+////    @Transactional
+////    @Rollback(value = false)
+////    void createRoles() {
+////
+////        RolesEntity roles = new RolesEntity();
+////        roles.setRoleName("ADMIN");
+////        roles.setRoleDescription("Administrator");
+////
+////        Optional<UserEntity> user = userRepository.findById((long) 4);
+////		List<UserEntity> list = new ArrayList<UserEntity>();
+////		list.add(user.get());
+////        roles.setUsers(list);
+////
+////        rolesRepository.save(roles);
+////
+////    }
+////
+    @Test
+    void bCryptPassword(){
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        encoder.encode("Demo@123");
+        System.out.printf("\n");
+        System.out.printf(encoder.encode("Demo@123"));
+        System.out.printf("\n");
+    }
 //    
 	
 //  @Test
