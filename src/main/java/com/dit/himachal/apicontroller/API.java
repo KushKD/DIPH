@@ -489,11 +489,7 @@ public class API {
     @Transactional
     public ResponseEntity<InputStreamResource> generateQrcode(@PathVariable("id") String id) throws IOException, WriterException, DocumentException {
 
-        Document document = new Document();
-        PdfWriter pdfWriter = PdfWriter.getInstance(document, new FileOutputStream("HelloWorld.pdf"));
 
-        document.open();
-        PdfContentByte pdfContentByte = pdfWriter.getDirectContent();
 
         ObjectMapper mapper = new ObjectMapper();
         //18
