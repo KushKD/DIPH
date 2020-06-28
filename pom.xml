@@ -14,7 +14,7 @@
 	<version>1</version>
 	<packaging>war</packaging>
 	<name>appleSeasonIDCardHP</name>
-	<description>Application for Generting te ID Card During Apple Season by HP Government</description>
+	<description>Application for Generating te ID Card During Apple Season by HP Government</description>
 
 	<properties>
 		<java.version>1.8</java.version>
