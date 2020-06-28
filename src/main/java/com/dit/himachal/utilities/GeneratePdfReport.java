@@ -31,10 +31,7 @@ public class GeneratePdfReport {
         System.out.println("43434"+postJson);
         Document document = new Document();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/downloadFile/")
-                .path(vehicleOwnerEntries.getVehicleOwnerImageName())
-                .toUriString();
+
 
         try {
 
@@ -83,7 +80,7 @@ public class GeneratePdfReport {
             Image codeQrImage = barcodeQRCode.getImage();
             codeQrImage.scaleAbsolute(100, 100);
 
-            Image image = Image.getInstance(new URL(fileDownloadUri));
+            Image image = Image.getInstance(new URL(Utilities.getPhotoUrl(vehicleOwnerEntries.getVehicleOwnerImageName())));
 
             PdfWriter.getInstance(document, out);
             document.open();
