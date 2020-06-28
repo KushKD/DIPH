@@ -1,77 +1,38 @@
 package com.dit.himachal.apicontroller;
 
-import com.dit.himachal.entities.BarrierMaster;
-import com.dit.himachal.entities.DistrictMaster;
-import com.dit.himachal.entities.OTPMaster;
-import com.dit.himachal.entities.StatesMaster;
-import com.dit.himachal.entities.UserEntity;
-import com.dit.himachal.entities.VehicleOwnerDocuments;
-import com.dit.himachal.entities.VehicleOwnerEntries;
-import com.dit.himachal.entities.VehicleTypeMaster;
-import com.dit.himachal.entities.VehicleUserType;
+import com.dit.himachal.entities.*;
 import com.dit.himachal.externalservices.SMSServices;
 import com.dit.himachal.modals.UsePoJo;
 import com.dit.himachal.payload.UploadFileResponse;
-import com.dit.himachal.repositories.OtpRepository;
-import com.dit.himachal.services.BarrierService;
-import com.dit.himachal.services.DistrictService;
-import com.dit.himachal.services.FileStorageService;
-import com.dit.himachal.services.OtpService;
-import com.dit.himachal.services.StatesService;
-import com.dit.himachal.services.UserService;
-import com.dit.himachal.services.VehicleOwnerDocumentsService;
-import com.dit.himachal.services.VehicleOwnerEntriesService;
-import com.dit.himachal.services.VehicleTypeService;
-import com.dit.himachal.services.VehicleUserTypeService;
+import com.dit.himachal.services.*;
 import com.dit.himachal.utilities.Constants;
 import com.dit.himachal.utilities.GeneratePdfReport;
 import com.dit.himachal.utilities.Utilities;
 import com.dit.himachal.utilities.random24;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.google.zxing.WriterException;
-import com.itextpdf.text.BadElementException;
-import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.pdf.BarcodeQRCode;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.qrcode.WriterException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-
-import java.awt.*;
 import java.io.ByteArrayInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import org.springframework.core.io.Resource;
 
 @RestController
 public class API {
@@ -487,11 +448,11 @@ public class API {
     @RequestMapping(value = "/api/generateqrcode/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
     //@Async("threadPoolTaskExecutor")
     @Transactional
-    public ResponseEntity<InputStreamResource> generateQrcode(@PathVariable("id") String id) throws IOException, WriterException, DocumentException {
+    public ResponseEntity<?> generateQrcode(@PathVariable("id") String id) throws IOException, WriterException, DocumentException {
 
         Optional<VehicleOwnerEntries> vehicleOwnerEntries = entriesService.getOwnerDetails(Long.valueOf(id));
 
-        ByteArrayInputStream bis = GeneratePdfReport.citiesReport(vehicleOwnerEntries.get());
+        ByteArrayInputStream bis = GeneratePdfReport.generateIdCard(vehicleOwnerEntries.get());
 
 
         HttpHeaders headers = new HttpHeaders();
