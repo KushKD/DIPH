@@ -269,10 +269,11 @@ public class SMSServices {
 		SSLSocketFactory sf=null;
 		SSLContext context=null;
 		String encryptedPassword;
+		X509TrustManager tm = null;
 		try {
 			//context=SSLContext.getInstance("TLSv1.1"); // Use this line for Java version 6
 			context=SSLContext.getInstance("TLSv1.2"); // Use this line for Java version 7 and above
-			X509TrustManager tm = new X509TrustManager() {
+			tm = new X509TrustManager() {
 
 			    public void checkClientTrusted(X509Certificate[] xcs, String string) throws CertificateException {
 			    }

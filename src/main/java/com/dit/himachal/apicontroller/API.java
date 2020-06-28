@@ -24,11 +24,23 @@ import com.dit.himachal.services.VehicleOwnerEntriesService;
 import com.dit.himachal.services.VehicleTypeService;
 import com.dit.himachal.services.VehicleUserTypeService;
 import com.dit.himachal.utilities.Constants;
+import com.dit.himachal.utilities.GeneratePdfReport;
 import com.dit.himachal.utilities.Utilities;
 import com.dit.himachal.utilities.random24;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.google.zxing.WriterException;
+import com.itextpdf.text.BadElementException;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.pdf.BarcodeQRCode;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -49,10 +61,15 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
+import java.awt.*;
+import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.core.io.Resource;
 
@@ -464,6 +481,48 @@ public class API {
         }
 
 
+    }
+
+
+    @RequestMapping(value = "/api/generateqrcode/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
+    //@Async("threadPoolTaskExecutor")
+    @Transactional
+    public ResponseEntity<InputStreamResource> generateQrcode(@PathVariable("id") String id) throws IOException, WriterException, DocumentException {
+
+        Document document = new Document();
+        PdfWriter pdfWriter = PdfWriter.getInstance(document, new FileOutputStream("HelloWorld.pdf"));
+
+        document.open();
+        PdfContentByte pdfContentByte = pdfWriter.getDirectContent();
+
+        ObjectMapper mapper = new ObjectMapper();
+        //18
+        Optional<VehicleOwnerEntries> vehicleOwnerEntries = entriesService.getOwnerDetails(Long.valueOf(id));
+
+
+
+
+     //  byte[] QRCode = Utilities.getQRCodeImage(postJson,100,100);
+
+//        BarcodeQRCode barcodeQrcode = new BarcodeQRCode(postJson, 1, 1, null);
+//        Image qrcodeImage = barcodeQrcode.getImage();
+//        qrcodeImage.setAbsolutePosition(20, 500);
+//        qrcodeImage.scalePercent(100);
+//        document.add(qrcodeImage);
+
+        ByteArrayInputStream bis = GeneratePdfReport.citiesReport(vehicleOwnerEntries.get());
+
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "inline; filename="+vehicleOwnerEntries.get().getIdCardNumber()+".pdf");
+
+
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(bis));
     }
 
 
