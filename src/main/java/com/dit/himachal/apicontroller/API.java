@@ -489,22 +489,7 @@ public class API {
     @Transactional
     public ResponseEntity<InputStreamResource> generateQrcode(@PathVariable("id") String id) throws IOException, WriterException, DocumentException {
 
-
-
-        ObjectMapper mapper = new ObjectMapper();
-        //18
         Optional<VehicleOwnerEntries> vehicleOwnerEntries = entriesService.getOwnerDetails(Long.valueOf(id));
-
-
-
-
-     //  byte[] QRCode = Utilities.getQRCodeImage(postJson,100,100);
-
-//        BarcodeQRCode barcodeQrcode = new BarcodeQRCode(postJson, 1, 1, null);
-//        Image qrcodeImage = barcodeQrcode.getImage();
-//        qrcodeImage.setAbsolutePosition(20, 500);
-//        qrcodeImage.scalePercent(100);
-//        document.add(qrcodeImage);
 
         ByteArrayInputStream bis = GeneratePdfReport.citiesReport(vehicleOwnerEntries.get());
 

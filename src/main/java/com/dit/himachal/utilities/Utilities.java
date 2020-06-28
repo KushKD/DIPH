@@ -32,19 +32,7 @@ public class Utilities {
         return Constants.otp_Message + OTP;
     }
 
-    /*
-	This method takes the text to be encoded, the width and height of the QR Code,
-	and returns the QR Code in the form of a byte array.
-	*/
-    public static byte[] getQRCodeImage(String object, int width, int height) throws WriterException, IOException {
-        QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        BitMatrix bitMatrix = qrCodeWriter.encode(object, BarcodeFormat.QR_CODE, width, height);
 
-        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
-        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
-        byte[] pngData = pngOutputStream.toByteArray();
-        return pngData;
-    }
 
 
     public static final String getPhotoUrl(String imageName){
