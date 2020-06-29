@@ -2,9 +2,11 @@ package com.dit.himachal.utilities;
 
 
 
+import org.springframework.util.Base64Utils;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,6 +36,17 @@ public class Utilities {
                 .path(imageName)
                 .toUriString();
         return fileDownloadUri;
+    }
+
+    public static String base64Encode(String token) {
+        byte[] encodedBytes = Base64Utils.encode(token.getBytes());
+        return new String(encodedBytes, Charset.forName("UTF-8"));
+    }
+
+
+    public static String base64Decode(String token) {
+        byte[] decodedBytes = Base64Utils.decode(token.getBytes());
+        return new String(decodedBytes, Charset.forName("UTF-8"));
     }
 
 

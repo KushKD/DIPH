@@ -8,6 +8,7 @@ import com.itextpdf.text.pdf.BarcodeQRCode;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,6 +21,8 @@ import java.util.logging.Logger;
 public class GeneratePdfReport {
 
 
+
+
     public static ByteArrayInputStream generateIdCard(VehicleOwnerEntries data) throws JsonProcessingException {
         VehicleOwnerEntries vehicleOwnerEntries = null;
         ObjectMapper objectMapper = new ObjectMapper();
@@ -27,11 +30,13 @@ public class GeneratePdfReport {
         vehicleOwnerEntries = data;
         String postJson = objectMapper.writeValueAsString(vehicleOwnerEntries);
         System.out.println("43434" + postJson);
-        Document document = new Document(new Rectangle(400f, 500f).rotate(), 5f, 5f, 5f, 5f);
+        Document document = new Document(new Rectangle(300f, 500f).rotate(), 5f, 5f, 5f, 5f);
         document.addTitle(vehicleOwnerEntries.getIdCardNumber());
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
+        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+        Font boldFont2 = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD);
 
         try {
 
@@ -46,32 +51,34 @@ public class GeneratePdfReport {
 
             PdfPCell cell;
 
+//            cell = new PdfPCell(new Phrase("Shimla District Police",boldFont2));
+//            cell.setColspan(1);
+//            cell.setRowspan(2);
+//
+//            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+//            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+//            table.addCell(cell);
 
-            cell = new PdfPCell(new Phrase("Shimla District Police"));
-            cell.setColspan(1);
-            cell.setRowspan(2);
 
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(cell);
-
-
-            cell = new PdfPCell(new Phrase("Shimla District Police"));
-            cell.setColspan(3);
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(cell);
-
-            cell = new PdfPCell(new Phrase(vehicleOwnerEntries.getIdCardNumber()));
-            cell.setColspan(3);
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(cell);
-
-            cell = new PdfPCell(new Phrase("ID Card for Apple Season 2020 only"));
+            cell = new PdfPCell(new Phrase("Shimla District Police",boldFont2));
             cell.setColspan(4);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(cell);
+
+            cell = new PdfPCell(new Phrase(vehicleOwnerEntries.getIdCardNumber(),boldFont2));
+            cell.setColspan(4);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(cell);
+
+
+
+            cell = new PdfPCell(new Phrase("ID Card for Apple Season 2020 (only)",boldFont));
+            cell.setColspan(4);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setPadding(10);
             table.addCell(cell);
 
 
@@ -80,19 +87,19 @@ public class GeneratePdfReport {
             float[] columnWidthsnested = {150f, 150f};
             childTable1.setWidths(columnWidthsnested);
             childTable1.addCell("Name:");
-            childTable1.addCell(new Phrase(vehicleOwnerEntries.getVehicleOwnerName()));
+            childTable1.addCell(new Phrase(vehicleOwnerEntries.getVehicleOwnerName(),boldFont2));
             childTable1.addCell("Chassis Number:");
-            childTable1.addCell(new Phrase(vehicleOwnerEntries.getVehicleOwnerChassisNumber()));
+            childTable1.addCell(new Phrase(vehicleOwnerEntries.getVehicleOwnerChassisNumber(),boldFont2));
             childTable1.addCell("Driving Licence Number:");
-            childTable1.addCell(new Phrase(vehicleOwnerEntries.getVehicleOwnerDrivingLicence()));
+            childTable1.addCell(new Phrase(vehicleOwnerEntries.getVehicleOwnerDrivingLicence(),boldFont2));
             childTable1.addCell("Engine Number:");
-            childTable1.addCell(new Phrase(vehicleOwnerEntries.getVehicleOwnerEngineNumber()));
+            childTable1.addCell(new Phrase(vehicleOwnerEntries.getVehicleOwnerEngineNumber(),boldFont2));
             childTable1.addCell("Chassis Number:");
-            childTable1.addCell(new Phrase(vehicleOwnerEntries.getVehicleOwnerChassisNumber()));
+            childTable1.addCell(new Phrase(vehicleOwnerEntries.getVehicleOwnerChassisNumber(),boldFont2));
             childTable1.addCell("Mobile Number:");
-            childTable1.addCell(new Phrase(String.valueOf(vehicleOwnerEntries.getVehicleOwnerMobileNumber())));
+            childTable1.addCell(new Phrase(String.valueOf(vehicleOwnerEntries.getVehicleOwnerMobileNumber()),boldFont2));
             childTable1.addCell("Valid Upto:");
-            childTable1.addCell(new Phrase(vehicleOwnerEntries.getIsValidUpto()));
+            childTable1.addCell(new Phrase(vehicleOwnerEntries.getIsValidUpto(),boldFont2));
             // Add the new table to the Cell of parent table
             // table.addCell(childTable1);
 
@@ -104,9 +111,10 @@ public class GeneratePdfReport {
             table.addCell(cell);
 
             //postJson
-            BarcodeQRCode barcodeQRCode = new BarcodeQRCode(postJson, 100, 100, null);
+            BarcodeQRCode barcodeQRCode = new BarcodeQRCode("Kush Dhawan", 100, 100, null);
             Image codeQrImage = barcodeQRCode.getImage();
             codeQrImage.setAbsolutePosition(50f, 50f);
+            codeQrImage.setBorder(0);
             //codeQrImage.scalePercent(10, 10);
 
 
@@ -139,6 +147,50 @@ public class GeneratePdfReport {
 //            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 //            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 //            table.addCell(cell);
+
+
+            cell = new PdfPCell(new Phrase("Aadhaar Number:"));
+            cell.setColspan(2);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(cell);
+
+            cell = new PdfPCell(new Phrase(vehicleOwnerEntries.getVehicleOwnerAadhaarNumber(),boldFont2));
+            cell.setColspan(2);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(cell);
+
+
+            cell = new PdfPCell(new Phrase("Place:"));
+            cell.setColspan(2);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(cell);
+
+            cell = new PdfPCell(new Phrase(String.valueOf(vehicleOwnerEntries.getVehicleBarrierId()),boldFont2));
+            cell.setColspan(2);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(cell);
+
+            cell = new PdfPCell(new Phrase("Date:"));
+            cell.setColspan(2);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(cell);
+
+            cell = new PdfPCell(new Phrase(vehicleOwnerEntries.getIsValidFrom(),boldFont2));
+            cell.setColspan(2);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(cell);
+
+            cell = new PdfPCell(new Phrase("If found Please handover to Shimla Police"));
+            cell.setColspan(4);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(cell);
 
 
             PdfWriter.getInstance(document, out);
